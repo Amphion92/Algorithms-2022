@@ -82,8 +82,12 @@ public class JavaAlgorithms {
      * Общий комментарий: решение из Википедии для этой задачи принимается,
      * но приветствуется попытка решить её самостоятельно.
      */
-    static public int josephTask(int menNumber, int choiceInterval) {
-        throw new NotImplementedError();
+    static public int josephTask(int menNumber, int choiceInterval) { //O(N)
+        int result = 0;
+        for (int i = 1; i <= menNumber; ++i){
+            result = (result + choiceInterval) % i;
+        }
+        return ++result;
     }
 
     /**
@@ -97,8 +101,22 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
-    static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
+    static public String longestCommonSubstring(String firs, String second) { //O(N^2)
+        String substring = "";
+        String longestSubstring = "";
+        for (int i = 0; i < firs.length(); i++) {
+            for (int j = i; j < firs.length(); j++) {
+                if (second.contains(firs.substring(i, j))) {
+                    substring = firs.substring(i, j);
+                } else {
+                    if (substring.length() > longestSubstring.length()) {
+                        longestSubstring = substring;
+                    }
+                    break;
+                }
+            }
+        }
+        return longestSubstring;
     }
 
     /**
@@ -111,7 +129,26 @@ public class JavaAlgorithms {
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
      * Единица простым числом не считается.
      */
-    static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+    static public int calcPrimesNumber(int limit) { //O(N^2)
+        int count = 0;
+        for (int i = 2; i <= limit; i++) {
+            if (checkPrimitive(i)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private static boolean checkPrimitive(int number) {
+        if (number < 2)
+            return false;
+        double s = Math.sqrt(number);
+        for (int i = 2; i <= s; i++) {
+            if (number % i == 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
+

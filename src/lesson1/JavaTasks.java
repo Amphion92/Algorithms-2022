@@ -37,7 +37,7 @@ public class JavaTasks {
      * <p>
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortTimes(String inputName, String outputName) {
+    static public void sortTimes(String inputName, String outputName) {  //O(N^3)
         File file = new File(inputName);
         try {
             Scanner scanner = new Scanner(file);
@@ -49,18 +49,29 @@ public class JavaTasks {
             List<Integer> secondsList = new ArrayList<>();
             for (String str : list) {
                 if (str.contains("AM")) {
-                    str = str.replaceAll("AM", "");
+                    str = str.replace(" AM", "");
                     String[] params = str.split(":");
-                    int seconds = Integer.parseInt(params[0]) * 3600 + Integer.parseInt(params[1]) * 60 +
+                    int hours = Integer.parseInt(params[0]);
+                    if (hours == 12) {
+                        hours = 0;
+                    }
+                    int seconds = hours * 3600 + Integer.parseInt(params[1]) * 60 +
                             Integer.parseInt(params[2]);
                     secondsList.add(seconds);
                 }
                 if (str.contains("PM")) {
-                    str = str.replaceAll("PM", "");
+                    str = str.replace(" PM", "");
                     String[] params = str.split(":");
-                    int seconds = (Integer.parseInt(params[0]) + 12) * 3600 + Integer.parseInt(params[1]) * 60 +
-                            Integer.parseInt(params[2]);
-                    secondsList.add(seconds);
+                    int hours = Integer.parseInt(params[0]);
+                    if (hours == 12) {
+                        int seconds = (Integer.parseInt(params[0])) * 3600 + Integer.parseInt(params[1]) * 60 +
+                                Integer.parseInt(params[2]);
+                        secondsList.add(seconds);
+                    } else {
+                        int seconds = (Integer.parseInt(params[0]) + 12) * 3600 + Integer.parseInt(params[1]) * 60 +
+                                Integer.parseInt(params[2]);
+                        secondsList.add(seconds);
+                    }
                 }
             }
             Collections.sort(secondsList);
@@ -69,11 +80,17 @@ public class JavaTasks {
                 int hour = second / 3600;
                 int min = second / 60 % 60;
                 int sec = second % 60;
-                if (hour > 12){
-                    result.add(hour-12 + ":" + min + ":" + sec + " PM" );
+                if (hour >= 12){
+                    if (hour > 12) {
+                        result.add(prepareTime(hour-12) + ":" + prepareTime(min) + ":" + prepareTime(sec) + " PM" );
+                    } else {
+                        result.add(prepareTime(hour) + ":" + prepareTime(min) + ":" + prepareTime(sec) + " PM" );
+                    }
                 }
-                else {
-                    result.add(hour + ":" + min + ":" + sec + " AM" );
+                else if (hour == 0){
+                    result.add(prepareTime(hour + 12) + ":" + prepareTime(min) + ":" + prepareTime(sec) + " AM" );
+                } else {
+                    result.add(prepareTime(hour) + ":" + prepareTime(min) + ":" + prepareTime(sec) + " AM" );
                 }
             }
             FileWriter fileWriter = new FileWriter(outputName);
@@ -84,8 +101,13 @@ public class JavaTasks {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-
+    private static String prepareTime(int time) {
+        if (time < 10) {
+            return "0" + time;
+        }
+        else return String.valueOf(time);
     }
 
     /**
@@ -148,8 +170,23 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTemperatures(String inputName, String outputName) { //O(N)
+        File file = new File(inputName);
+        try {
+            Scanner scanner = new Scanner(file);
+            List<Float> list = new ArrayList<>();
+            while (scanner.hasNextLine()) {
+                list.add(Float.valueOf(scanner.nextLine()));
+            }
+            Collections.sort(list);
+            FileWriter fileWriter = new FileWriter(outputName);
+            for(Float number: list){
+                fileWriter.write(number + "\n");
+            }
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
